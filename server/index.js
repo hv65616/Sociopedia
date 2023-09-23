@@ -10,8 +10,10 @@ import path from "path";
 import { fileURLToPath } from "url";
 import authroutes from "./routes/auth.js";
 import { register } from "./controller/auth.js";
-import userroutes from "./routes/users.js"
-
+import userroutes from "./routes/users.js";
+import postroutes from "./routes/posts.js";
+import { verifytoken } from "./middleware/auth.js";
+import { createpost } from "./controller/posts.js";
 // Configurations
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -40,11 +42,13 @@ const upload = multer({ storage });
 
 // Routes with files
 app.post("/auth/register", upload.single("picture"), register);
+app.post("/posts", verifytoken, upload.single("picture", createpost));
 
 // Routes
 app.use("/auth", authroutes);
+app.use("/users", userroutes);
+app.use("/posts", postroutes);
 
-app.use("/users",userroutes)
 // Mongosse Setup
 const PORT = process.env.PORT || 6001;
 mongoose
