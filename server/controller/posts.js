@@ -3,10 +3,10 @@ import User from "../models/User.js";
 // Create
 export const createpost = async (req, res) => {
   try {
-    const { userid, description, picturePath } = req.body;
-    const user = await User.findById(userid);
+    const { userId, description, picturePath } = req.body;
+    const user = await User.findById(userId);
     const newpost = new Post({
-      userid,
+      userId,
       firstName: user.firstName,
       lastName: user.lastName,
       location: user.location,
@@ -41,8 +41,8 @@ export const getfeedposts = async (req, res) => {
 // get user posts
 export const getuserposts = async (req, res) => {
   try {
-    const { userid } = req.params;
-    const post = await Post.find({ userid });
+    const { userId } = req.params;
+    const post = await Post.find({ userId });
     res.status(201).json(post);
   } catch (error) {
     res.status(404).json({
@@ -55,13 +55,13 @@ export const getuserposts = async (req, res) => {
 export const likepost = async (req, res) => {
   try {
     const { id } = req.params;
-    const { userid } = req.body;
+    const { userId } = req.body;
     const post = await Post.findById(id);
-    const isliked = post.likes.get(userid);
+    const isliked = post.likes.get(userId);
     if (isliked) {
-      post.likes.delete(userid);
+      post.likes.delete(userId);
     } else {
-      post.likes.set(userid, true);
+      post.likes.set(userId, true);
     }
     const updatedpost = await Post.findByIdAndUpdate(
       id,
